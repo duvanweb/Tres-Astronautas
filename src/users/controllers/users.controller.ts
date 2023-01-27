@@ -6,7 +6,7 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger';
 /**
  * Controlador del módulo de usuarios
  * @author Duvan Manzano. - jhorman980815@gmail.com
- * @copyright Duvan 2022
+ * @copyright Duvan 2023
  */
 @ApiTags('Users')
 @Controller('users')
@@ -21,7 +21,7 @@ export class UsersController {
    */
   @Post()
   @ApiOperation({ summary: 'Create a user'})
-  store(@Body() payload: CreateUsersDto): Promise<object> {
-    return this.usersService.store(payload);
+  async store(@Body() payload: CreateUsersDto): Promise<object> {
+    return await this.usersService.store(payload);
   }
 }
