@@ -1,7 +1,8 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 import { Product } from '../entities/product.entity';
 import { CreateProductDto, UpdateProductDto } from "../dtos/products.dtos";
-import { ProductRepository } from "../repository/product.repository";
 
 /**
  * Servicio del módulo de Productos
@@ -9,9 +10,9 @@ import { ProductRepository } from "../repository/product.repository";
  * @copyright Duvan 2022
  */
 @Injectable()
-export class ProductService {
+export class ProductRepository {
   constructor(
-    private productRepository: ProductRepository
+    @InjectModel(Product.name) private productModel: Model<Product>
   ) { }
 
   /**
@@ -19,7 +20,7 @@ export class ProductService {
    * @returns {Promise<array<Product>>}
    */
   getAll(): Promise<Product[]> {
-    return this.productRepository.getAll();
+    return this.productModel.find().populate('user').exec();
   }
 
   /**
@@ -28,7 +29,7 @@ export class ProductService {
    * @returns {Promise<Product>}
    */
   async findOne(id: string): Promise<Product> {
-    return await this.productRepository.findOne(id);
+    return await this.productModel.findOne({ id }).exec();
   }
 
   /**
@@ -38,7 +39,8 @@ export class ProductService {
    * @returns {Promise<Product>}
    */
   store(product: CreateProductDto, user: string): Promise<Product> {
-    return this.productRepository.store(product, user);
+    const newProduct = new this.productModel({ ...product, user });
+    return newProduct.save();
   }
 
   /**
@@ -47,9 +49,9 @@ export class ProductService {
    * @param {UpdateProductDto} changes
    * @returns {Promise<Product>}
    */
-  async update(id: string, changes: UpdateProductDto): Promise<Product> {
-    const product = await this.productRepository.update(id, changes);
-    if (!product) {
+  update(id: string, changes: UpdateProductDto): Promise<Product> {
+    const product = this.productModel.findByIdAndUpdate(id,{ $set: changes }, { new: true}).exec();
+    if(!product) {
       throw new NotFoundException(`Product #${id} not found`);
     }
     return product;
@@ -61,7 +63,7 @@ export class ProductService {
    * @returns {any}
    */
   remove(id: string): any {
-    return this.productRepository.remove(id);
+    return this.productModel.findByIdAndDelete(id);
   }
 
 }
