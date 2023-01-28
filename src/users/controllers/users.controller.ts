@@ -2,6 +2,7 @@ import { Controller, Post, Body } from '@nestjs/common';
 import { CreateUsersDto } from '../dtos/user.dtos';
 import { UsersService } from './../services/users.service';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { User } from '../entities/user.entity';
 
 /**
  * Controlador del módulo de usuarios
@@ -17,11 +18,11 @@ export class UsersController {
   /**
    * Metodo para crear un usuario
    * @param {CreateUsersDto} payload
-   * @returns {Promise<object>}
+   * @returns {Promise<User>}
    */
   @Post()
   @ApiOperation({ summary: 'Create a user'})
-  async store(@Body() payload: CreateUsersDto): Promise<object> {
-    return await this.usersService.store(payload);
+  async createUser(@Body() payload: CreateUsersDto): Promise<User> {
+    return this.usersService.createUser(payload);
   }
 }

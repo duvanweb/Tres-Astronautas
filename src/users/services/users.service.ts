@@ -21,8 +21,8 @@ export class UsersService {
    * @param {string} user
    * @returns {Promise<User>}
    */
-  async store(user: CreateUsersDto): Promise<User> {
+  async createUser(user: CreateUsersDto): Promise<User> {
     user.password = await bcrypt.hash(user.password, 10);
-    return await this.userRepository.store(user);
+    return this.userRepository.store(user);
   }
 }

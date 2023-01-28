@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { CreateUsersDto } from '../dtos/user.dtos';
-import { User } from '../entities/user.entity';
+import { User, UserDocument } from '../entities/user.entity';
 import { Model } from 'mongoose';
 
 
@@ -13,7 +13,7 @@ import { Model } from 'mongoose';
 @Injectable()
 export class UserRepository {
   constructor(
-    @InjectModel(User.name) private userModel: Model<User>
+    @InjectModel(User.name) private userModel: Model<UserDocument>
   ) { }
 
   /**
@@ -24,9 +24,7 @@ export class UserRepository {
    */
   async store(user: CreateUsersDto): Promise<User> {
     const newUser = new this.userModel(user);
-    const model = await newUser.save();
-    const { rta } = model.toJSON();
-    return rta;
+    return newUser.save();
   }
 
   /**
