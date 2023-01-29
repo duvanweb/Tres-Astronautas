@@ -6,9 +6,9 @@ import { MongooseModule } from '@nestjs/mongoose';
   imports: [
     MongooseModule.forRootAsync({
       useFactory: (configService: ConfigService) => {
-        const { user, password, dbName, port, host, connection } = configService.get('mongo')
+        const { user, password, dbName, host, connection } = configService.get('mongo')
         return {
-          uri: `${connection}://${host}:${port}`,
+          uri: `${connection}://${host}`,
           user,
           pass: password,
           dbName,
