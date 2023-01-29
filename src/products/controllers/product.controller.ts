@@ -6,7 +6,6 @@ import { Product } from '../entities/product.entity';
 import { CreateProductDto, UpdateProductDto } from "../dtos/products.dtos";
 import { MongoIdPipe } from '../../common/mongo-id.pipe';
 import { OwnerGuard } from '../../auth/guards/owner.guard';
-import { PayloadToken } from '../../auth/models/token.model';
 
 
 /**
@@ -40,8 +39,7 @@ export class ProductController {
   @Post()
   @ApiOperation({ summary: 'Create a product'})
   store(@Body() payload: CreateProductDto, @Request() req): Promise<Product> {
-    const user: PayloadToken = req.user;
-    return this.productService.store(payload, user.id);
+    return this.productService.store(payload, req);
   }
 
   /**
@@ -65,7 +63,7 @@ export class ProductController {
   @UseGuards(OwnerGuard)
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a product'})
-  remove(@Param('id', MongoIdPipe) id: string): any {
+  remove(@Param('id', MongoIdPipe) id: string): Promise<Product> {
     return this.productService.remove(id);
   }
 

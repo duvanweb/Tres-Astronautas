@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from "@nestjs/common";
 import { Product } from '../entities/product.entity';
 import { CreateProductDto, UpdateProductDto } from "../dtos/products.dtos";
 import { ProductRepository } from "../repository/product.repository";
+import { PayloadToken } from '../../auth/models/token.model';
 
 /**
  * Servicio del módulo de Productos
@@ -18,7 +19,7 @@ export class ProductService {
    * Metodo para Consultar todos los productos
    * @returns {Promise<array<Product>>}
    */
-  getAll(): Promise<Product[]> {
+  async getAll(): Promise<Product[]> {
     return this.productRepository.getAll();
   }
 
@@ -28,7 +29,7 @@ export class ProductService {
    * @returns {Promise<Product>}
    */
   async findOne(id: string): Promise<Product> {
-    return await this.productRepository.findOne(id);
+    return this.productRepository.findOne(id);
   }
 
   /**
@@ -37,8 +38,9 @@ export class ProductService {
    * @param {string} user
    * @returns {Promise<Product>}
    */
-  store(product: CreateProductDto, user: string): Promise<Product> {
-    return this.productRepository.store(product, user);
+  async store(product: CreateProductDto, req: any): Promise<Product> {
+    const user: PayloadToken = req.user;
+    return this.productRepository.store(product, user.id);
   }
 
   /**
@@ -60,7 +62,7 @@ export class ProductService {
    * @param {string} id del produto que se va eliminar
    * @returns {any}
    */
-  remove(id: string): any {
+  async remove(id: string) {
     return this.productRepository.remove(id);
   }
 

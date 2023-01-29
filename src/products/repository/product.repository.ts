@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Product } from '../entities/product.entity';
+import { Product, ProductDocument } from '../entities/product.entity';
 import { CreateProductDto, UpdateProductDto } from "../dtos/products.dtos";
 
 /**
@@ -12,14 +12,14 @@ import { CreateProductDto, UpdateProductDto } from "../dtos/products.dtos";
 @Injectable()
 export class ProductRepository {
   constructor(
-    @InjectModel(Product.name) private productModel: Model<Product>
+    @InjectModel(Product.name) private productModel: Model<ProductDocument>
   ) { }
 
   /**
    * Metodo para Consultar todos los productos
    * @returns {Promise<array<Product>>}
    */
-  getAll(): Promise<Product[]> {
+  async getAll(): Promise<Product[]> {
     return this.productModel.find().populate('user').exec();
   }
 
@@ -29,7 +29,7 @@ export class ProductRepository {
    * @returns {Promise<Product>}
    */
   async findOne(id: string): Promise<Product> {
-    return await this.productModel.findOne({ id }).exec();
+    return this.productModel.findOne({ id }).exec();
   }
 
   /**
@@ -38,9 +38,8 @@ export class ProductRepository {
    * @param {string} user
    * @returns {Promise<Product>}
    */
-  store(product: CreateProductDto, user: string): Promise<Product> {
-    const newProduct = new this.productModel({ ...product, user });
-    return newProduct.save();
+  async store(product: CreateProductDto, user: string): Promise<Product> {
+    return new this.productModel({ ...product, user }).save();
   }
 
   /**
@@ -49,12 +48,8 @@ export class ProductRepository {
    * @param {UpdateProductDto} changes
    * @returns {Promise<Product>}
    */
-  update(id: string, changes: UpdateProductDto): Promise<Product> {
-    const product = this.productModel.findByIdAndUpdate(id,{ $set: changes }, { new: true}).exec();
-    if(!product) {
-      throw new NotFoundException(`Product #${id} not found`);
-    }
-    return product;
+  async update(id: string, changes: UpdateProductDto): Promise<Product> {
+    return this.productModel.findByIdAndUpdate(id,{ $set: changes }, { new: true}).exec();;
   }
 
   /**
@@ -62,7 +57,7 @@ export class ProductRepository {
    * @param {string} id del produto que se va eliminar
    * @returns {any}
    */
-  remove(id: string): any {
+  async remove(id: string): Promise<Product> {
     return this.productModel.findByIdAndDelete(id);
   }
 

@@ -2,8 +2,10 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 import { User } from '../../users/entities/user.entity';
 
+export type ProductDocument = Product & Document;
 @Schema()
-export class Product extends Document{
+export class Product {
+
   @Prop( { required: true })
   name: string;
 
