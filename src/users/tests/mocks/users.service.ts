@@ -4,9 +4,6 @@ import { User } from '../../entities/user.entity';
 
 export class UsersServiceMock {
   async createUser(user: CreateUsersDto): Promise<User> { 
-    return Promise.resolve({ 
-      id: userStub().id,
-      ...user,
-    });
+    return Promise.resolve(user);
   }
 }

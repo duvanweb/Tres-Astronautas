@@ -4,8 +4,6 @@ import { CreateUsersDto } from '../dtos/user.dtos';
 import { UserRepository } from '../repository/user.repository';
 import { userStub } from './stubs/user.stub';
 import { UsersRepositoryMock } from './mocks/users.repository';
-import { User } from '../entities/user.entity';
-import * as bcrypt from 'bcrypt';
 
 describe('UsersService', () => {
   let service: UsersService;

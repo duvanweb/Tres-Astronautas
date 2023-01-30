@@ -67,7 +67,7 @@ describe('ProductController', () => {
         }
         req = {
           user: {
-            id: productStub().user.id,
+            id: '1',
             email: userStub().email
           }
         }

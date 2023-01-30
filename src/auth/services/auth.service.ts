@@ -3,7 +3,7 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 
 import { UserRepository } from '../../users/repository/user.repository';
-import { User } from '../../users/entities/user.entity';
+import { User, UserDocument } from '../../users/entities/user.entity';
 import { PayloadToken } from '../models/token.model';
 
 /**
@@ -36,7 +36,7 @@ export class AuthService {
    * @param {User} user
    * @returns {object}
    */
-  generateJWT(user: User): object {
+  generateJWT(user: UserDocument): object {
     const payload: PayloadToken = { id: user.id, email: user.email };
     return {
       access_token: this.jwtService.sign(payload),
